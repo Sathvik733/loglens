@@ -3,7 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { Activity, AlertTriangle, Bug, KeyRound, LogOut, Plus, Search, Server, ShieldCheck, Trash2 } from 'lucide-react';
 import './index.css';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+const API_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5000';
 
 function App() {
   const [token, setToken] = useState(localStorage.getItem('token') || '');
