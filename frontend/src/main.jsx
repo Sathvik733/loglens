@@ -18,10 +18,11 @@ function App() {
   const [levelFilter, setLevelFilter] = useState('');
   const [search, setSearch] = useState('');
   const [sampleLog, setSampleLog] = useState({
-  level: '',
-  message: '',
-  source: '',
-  environment: ''});
+    level: '',
+    message: '',
+    source: '',
+    environment: ''
+  });
   const [message, setMessage] = useState('');
 
   const authHeaders = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
@@ -100,14 +101,15 @@ function App() {
     });
     const data = await res.json();
     if (!res.ok) return setMessage(data.error || 'Could not send log');
-    setMessage('Sample log sent successfully');
 
+    setMessage('Log sent successfully');
     setSampleLog({
       level: '',
       message: '',
       source: '',
       environment: ''
     });
+
     fetchLogs();
     fetchStats();
   }
@@ -135,8 +137,8 @@ function App() {
           <div><h1 className="text-3xl font-bold">LogLens</h1><p className="text-slate-500">Production log monitoring dashboard</p></div>
         </div>
         <form onSubmit={handleAuth} className="space-y-4">
-          {authMode === 'register' && <input className="w-full border rounded-xl px-4 py-3" placeholder="Name" value={authForm.name} onChange={e => setAuthForm({ ...authForm, name: e.target.value })} />}
-          <input className="w-full border rounded-xl px-4 py-3" placeholder="Email" value={authForm.email} onChange={e => setAuthForm({ ...authForm, email: e.target.value })} />
+          {authMode === 'register' && <input className="w-full border rounded-xl px-4 py-3" placeholder="Full name" value={authForm.name} onChange={e => setAuthForm({ ...authForm, name: e.target.value })} />}
+          <input className="w-full border rounded-xl px-4 py-3" placeholder="Email address" value={authForm.email} onChange={e => setAuthForm({ ...authForm, email: e.target.value })} />
           <input className="w-full border rounded-xl px-4 py-3" type="password" placeholder="Password" value={authForm.password} onChange={e => setAuthForm({ ...authForm, password: e.target.value })} />
           {message && <p className="text-sm text-red-600">{message}</p>}
           <button className="w-full bg-slate-900 text-white rounded-xl py-3 font-semibold">{authMode === 'login' ? 'Login' : 'Create Account'}</button>
@@ -159,8 +161,8 @@ function App() {
         <section className="bg-white rounded-3xl p-5 shadow-sm border">
           <h2 className="font-bold text-lg mb-4 flex gap-2"><Plus /> New Project</h2>
           <form onSubmit={createProject} className="space-y-3">
-            <input className="w-full border rounded-xl px-3 py-2" placeholder="Project name" value={projectForm.name} onChange={e => setProjectForm({ ...projectForm, name: e.target.value })} />
-            <textarea className="w-full border rounded-xl px-3 py-2" placeholder="Description" value={projectForm.description} onChange={e => setProjectForm({ ...projectForm, description: e.target.value })} />
+            <input className="w-full border rounded-xl px-3 py-2" placeholder="Project name, e.g. Ecommerce API" value={projectForm.name} onChange={e => setProjectForm({ ...projectForm, name: e.target.value })} />
+            <textarea className="w-full border rounded-xl px-3 py-2" placeholder="Short description, e.g. Tracks backend production logs" value={projectForm.description} onChange={e => setProjectForm({ ...projectForm, description: e.target.value })} />
             <button className="w-full bg-slate-900 text-white rounded-xl py-2">Create</button>
           </form>
         </section>
@@ -195,16 +197,20 @@ function App() {
           </div>
 
           <div className="bg-white rounded-3xl p-6 shadow-sm border">
-            <h3 className="font-bold text-lg mb-4">Send Sample Log</h3>
+            <h3 className="font-bold text-lg mb-4">Add New Log Entry</h3>
             <form onSubmit={sendSampleLog} className="grid md:grid-cols-4 gap-3">
               <select className="border rounded-xl px-3 py-2" value={sampleLog.level} onChange={e => setSampleLog({ ...sampleLog, level: e.target.value })}>
-                <option value="">Select Level</option>
-                {['debug','info','warning','error','critical'].map(l => <option key={l}>{l}</option>)}
+                <option value="">Select log level</option>
+                <option value="debug">Debug</option>
+                <option value="info">Info</option>
+                <option value="warning">Warning</option>
+                <option value="error">Error</option>
+                <option value="critical">Critical</option>
               </select>
-              <input className="border rounded-xl px-3 py-2" value={sampleLog.source} onChange={e => setSampleLog({ ...sampleLog, source: e.target.value })} />
-              <input className="border rounded-xl px-3 py-2" value={sampleLog.environment} onChange={e => setSampleLog({ ...sampleLog, environment: e.target.value })} />
-              <button className="bg-slate-900 text-white rounded-xl py-2">Send</button>
-              <input className="md:col-span-4 border rounded-xl px-3 py-2" value={sampleLog.message} onChange={e => setSampleLog({ ...sampleLog, message: e.target.value })} />
+              <input className="border rounded-xl px-3 py-2" placeholder="Source, e.g. checkout-api" value={sampleLog.source} onChange={e => setSampleLog({ ...sampleLog, source: e.target.value })} />
+              <input className="border rounded-xl px-3 py-2" placeholder="Environment, e.g. production" value={sampleLog.environment} onChange={e => setSampleLog({ ...sampleLog, environment: e.target.value })} />
+              <button className="bg-slate-900 text-white rounded-xl py-2">Add Log</button>
+              <input className="md:col-span-4 border rounded-xl px-3 py-2" placeholder="Log message, e.g. Payment service timeout after 5000ms" value={sampleLog.message} onChange={e => setSampleLog({ ...sampleLog, message: e.target.value })} />
             </form>
             {message && <p className="text-sm mt-3 text-slate-600">{message}</p>}
           </div>
@@ -216,7 +222,7 @@ function App() {
                 <select className="border rounded-xl px-3 py-2" value={levelFilter} onChange={e => setLevelFilter(e.target.value)}>
                   <option value="">All Levels</option>{['debug','info','warning','error','critical'].map(l => <option key={l}>{l}</option>)}
                 </select>
-                <div className="flex border rounded-xl items-center px-3"><Search size={18}/><input className="px-2 py-2 outline-none" placeholder="Search" value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && fetchLogs()} /></div>
+                <div className="flex border rounded-xl items-center px-3"><Search size={18}/><input className="px-2 py-2 outline-none" placeholder="Search logs" value={search} onChange={e => setSearch(e.target.value)} onKeyDown={e => e.key === 'Enter' && fetchLogs()} /></div>
                 <button onClick={fetchLogs} className="bg-slate-900 text-white px-4 rounded-xl">Search</button>
                 <button onClick={clearLogs} className="bg-red-50 text-red-600 px-3 rounded-xl"><Trash2 size={18}/></button>
               </div>
