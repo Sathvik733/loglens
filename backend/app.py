@@ -12,7 +12,7 @@ from flask_sqlalchemy import SQLAlchemy
 load_dotenv()
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/api/*": {"origins": "*"}})
 
 raw_database_url = os.getenv("DATABASE_URL", "sqlite:///loglens.db")
 if raw_database_url.startswith("postgres://"):
