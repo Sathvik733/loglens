@@ -17,7 +17,11 @@ function App() {
   const [projectForm, setProjectForm] = useState({ name: '', description: '' });
   const [levelFilter, setLevelFilter] = useState('');
   const [search, setSearch] = useState('');
-  const [sampleLog, setSampleLog] = useState({ level: 'error', message: 'Payment service timeout after 5000ms', source: 'checkout-api', environment: 'production' });
+  const [sampleLog, setSampleLog] = useState({
+  level: '',
+  message: '',
+  source: '',
+  environment: ''});
   const [message, setMessage] = useState('');
 
   const authHeaders = { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' };
@@ -97,6 +101,13 @@ function App() {
     const data = await res.json();
     if (!res.ok) return setMessage(data.error || 'Could not send log');
     setMessage('Sample log sent successfully');
+
+    setSampleLog({
+      level: '',
+      message: '',
+      source: '',
+      environment: ''
+    });
     fetchLogs();
     fetchStats();
   }
@@ -187,6 +198,7 @@ function App() {
             <h3 className="font-bold text-lg mb-4">Send Sample Log</h3>
             <form onSubmit={sendSampleLog} className="grid md:grid-cols-4 gap-3">
               <select className="border rounded-xl px-3 py-2" value={sampleLog.level} onChange={e => setSampleLog({ ...sampleLog, level: e.target.value })}>
+                <option value="">Select Level</option>
                 {['debug','info','warning','error','critical'].map(l => <option key={l}>{l}</option>)}
               </select>
               <input className="border rounded-xl px-3 py-2" value={sampleLog.source} onChange={e => setSampleLog({ ...sampleLog, source: e.target.value })} />
